@@ -1,0 +1,1040 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistem Realisasi Belanja Makan Minum Pasien</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Google Fonts (Inter) -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        @media print {
+            .no-print { display: none !important; }
+            .print-only { display: block !important; }
+            body { background: white; color: black; font-size: 11px; }
+            .card-shadow { box-shadow: none !important; border: 1px solid #e5e7eb; }
+            table { page-break-inside: auto; }
+            tr { page-break-inside: avoid; page-break-after: auto; }
+        }
+        .custom-scrollbar::-webkit-scrollbar { width: 6px; height: 6px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: #f1f1f1; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 min-h-screen flex flex-col">
+
+    <!-- Toast Notification -->
+    <div id="toast" class="fixed top-5 right-5 z-50 transform transition-all duration-300 translate-y-[-100px] opacity-0 flex items-center p-4 mb-4 text-gray-500 bg-white rounded-xl shadow-lg border border-slate-100" role="alert">
+        <div id="toast-icon" class="inline-flex items-center justify-center flex-shrink-0 w-8 h-8 rounded-lg"></div>
+        <div id="toast-msg" class="ml-3 text-sm font-medium"></div>
+    </div>
+
+    <!-- Header / Navbar -->
+    <header class="bg-emerald-800 text-white shadow-md no-print">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex flex-col sm:flex-row justify-between items-center gap-4">
+            <div class="flex items-center space-x-3">
+                <div class="bg-emerald-600 p-2.5 rounded-xl shadow-inner text-white">
+                    <i class="fa-solid fa-utensils text-2xl"></i>
+                </div>
+                <div>
+                    <h1 class="text-xl font-bold leading-tight">SIM-MAKAN MINUM PASIEN</h1>
+                    <p class="text-xs text-emerald-200">Realisasi Belanja Bahan Pelayanan Kesehatan & Administrasi Umum</p>
+                </div>
+            </div>
+            
+            <div class="flex flex-wrap items-center gap-2">
+                <button onclick="openModal()" class="bg-emerald-600 hover:bg-emerald-500 text-white font-medium text-xs sm:text-sm px-3.5 py-2 rounded-lg transition-colors duration-200 flex items-center shadow-sm">
+                    <i class="fa-solid fa-plus mr-2"></i> Tambah Kegiatan
+                </button>
+                <button onclick="exportCSV()" class="bg-teal-700 hover:bg-teal-600 text-white font-medium text-xs sm:text-sm px-3.5 py-2 rounded-lg transition-colors duration-200 flex items-center shadow-sm">
+                    <i class="fa-solid fa-file-excel mr-2"></i> Ekspor CSV
+                </button>
+                <button onclick="window.print()" class="bg-sky-700 hover:bg-sky-600 text-white font-medium text-xs sm:text-sm px-3.5 py-2 rounded-lg transition-colors duration-200 flex items-center shadow-sm" title="Cetak atau Simpan PDF">
+                    <i class="fa-solid fa-print mr-2"></i> Cetak / PDF
+                </button>
+                <button onclick="toggleBackupMenu()" class="bg-emerald-900 hover:bg-emerald-950 text-white font-medium text-xs sm:text-sm px-3 py-2 rounded-lg transition-colors duration-200 flex items-center">
+                    <i class="fa-solid fa-database mr-1.5"></i> Data
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Sub Header Data Management Dropdown -->
+    <div id="backup-menu" class="hidden bg-emerald-900 text-white border-b border-emerald-700 no-print transition-all duration-300">
+        <div class="max-w-7xl mx-auto px-4 py-3 flex flex-wrap items-center justify-between gap-4 text-xs">
+            <div class="flex items-center space-x-2">
+                <i class="fa-solid fa-hard-drive text-emerald-300"></i>
+                <span class="font-semibold">Penyimpanan & Pencadangan Data Lokal:</span>
+            </div>
+            <div class="flex flex-wrap items-center gap-2">
+                <button onclick="exportBackupJSON()" class="bg-emerald-700 hover:bg-emerald-600 px-3 py-1.5 rounded flex items-center">
+                    <i class="fa-solid fa-download mr-1.5"></i> Unduh Cadangan (JSON)
+                </button>
+                <label class="bg-emerald-700 hover:bg-emerald-600 px-3 py-1.5 rounded cursor-pointer flex items-center">
+                    <i class="fa-solid fa-upload mr-1.5"></i> Pemulihan (JSON)
+                    <input type="file" id="import-file" accept=".json" class="hidden" onchange="importBackupJSON(event)">
+                </label>
+                <button onclick="resetToDefaultData()" class="bg-red-700 hover:bg-red-600 px-3 py-1.5 rounded flex items-center">
+                    <i class="fa-solid fa-rotate-left mr-1.5"></i> Reset Data Sampel
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content Area -->
+    <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6">
+        
+        <!-- Print Header Info -->
+        <div class="hidden print-only mb-6 text-center border-b pb-4">
+            <h1 class="text-xl font-bold uppercase tracking-wider">Laporan Realisasi Belanja Makan Minum Pasien</h1>
+            <p class="text-xs text-gray-600">Instalasi Gizi & Pelayanan Kesehatan Pasien - Tahun Anggaran 2026</p>
+            <p class="text-xs text-gray-500 mt-1">Dicetak pada: <span id="print-date"></span></p>
+        </div>
+
+        <!-- Metric Cards Overview -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-5 mb-6">
+            <!-- Total Pagu -->
+            <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-200/80 card-shadow">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-xs font-semibold uppercase tracking-wider text-slate-500">Total Pagu Anggaran</p>
+                        <h3 class="text-2xl font-bold text-slate-800 mt-1" id="card-total-pagu">Rp 0</h3>
+                    </div>
+                    <div class="bg-emerald-50 text-emerald-600 p-3 rounded-xl">
+                        <i class="fa-solid fa-wallet text-xl"></i>
+                    </div>
+                </div>
+                <div class="mt-3 text-xs text-slate-500">
+                    Akumulasi Pagu Makan Minum & Operasional
+                </div>
+            </div>
+
+            <!-- Total Realisasi Kumulatif -->
+            <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-200/80 card-shadow">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-xs font-semibold uppercase tracking-wider text-slate-500">Total Realisasi Kumulatif</p>
+                        <h3 class="text-2xl font-bold text-emerald-600 mt-1" id="card-total-realisasi">Rp 0</h3>
+                    </div>
+                    <div class="bg-teal-50 text-teal-600 p-3 rounded-xl">
+                        <i class="fa-solid fa-chart-line text-xl"></i>
+                    </div>
+                </div>
+                <div class="mt-3 flex items-center justify-between text-xs">
+                    <span class="text-slate-500">Persentase Serapan Total</span>
+                    <span class="font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full" id="card-serapan-total">0%</span>
+                </div>
+            </div>
+
+            <!-- Total Sisa Anggaran -->
+            <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-200/80 card-shadow">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-xs font-semibold uppercase tracking-wider text-slate-500">Total Sisa Anggaran</p>
+                        <h3 class="text-2xl font-bold text-amber-600 mt-1" id="card-total-sisa">Rp 0</h3>
+                    </div>
+                    <div class="bg-amber-50 text-amber-600 p-3 rounded-xl">
+                        <i class="fa-solid fa-piggy-bank text-xl"></i>
+                    </div>
+                </div>
+                <div class="mt-3 text-xs text-slate-500">
+                    Sisa Anggaran Belanja Belum Terealisasi
+                </div>
+            </div>
+        </div>
+
+        <!-- 2 Kelompok Belanja Cards Overview -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-5 mb-6">
+            <!-- Rekap Belanja Bahan Pelayanan Kesehatan -->
+            <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-200/80 card-shadow border-l-4 border-l-emerald-600">
+                <div class="flex justify-between items-start">
+                    <div>
+                        <span class="inline-block px-2.5 py-1 text-xs font-semibold bg-emerald-100 text-emerald-800 rounded-md mb-2">
+                            Kelompok Belanja 1
+                        </span>
+                        <h4 class="font-bold text-slate-800">Belanja Bahan Pelayanan Kesehatan</h4>
+                        <p class="text-xs text-slate-500 mt-0.5">(Makan, Minum, Bahan Makanan Pasien)</p>
+                    </div>
+                    <div class="text-right">
+                        <span class="text-xs text-slate-500 block">Serapan</span>
+                        <span class="text-lg font-bold text-emerald-600" id="rekap1-persen">0%</span>
+                    </div>
+                </div>
+                <div class="mt-4 grid grid-cols-3 gap-2 text-xs pt-3 border-t border-slate-100">
+                    <div>
+                        <span class="text-slate-400 block">Pagu</span>
+                        <span class="font-semibold text-slate-700" id="rekap1-pagu">Rp 0</span>
+                    </div>
+                    <div>
+                        <span class="text-slate-400 block">Realisasi</span>
+                        <span class="font-semibold text-emerald-600" id="rekap1-realisasi">Rp 0</span>
+                    </div>
+                    <div>
+                        <span class="text-slate-400 block">Sisa</span>
+                        <span class="font-semibold text-amber-600" id="rekap1-sisa">Rp 0</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Rekap Belanja Barang Administrasi Umum -->
+            <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-200/80 card-shadow border-l-4 border-l-blue-600">
+                <div class="flex justify-between items-start">
+                    <div>
+                        <span class="inline-block px-2.5 py-1 text-xs font-semibold bg-blue-100 text-blue-800 rounded-md mb-2">
+                            Kelompok Belanja 2
+                        </span>
+                        <h4 class="font-bold text-slate-800">Belanja Barang Administrasi Umum</h4>
+                        <p class="text-xs text-slate-500 mt-0.5">(ATK, Cetak, Kebersihan & Penunjang Admin)</p>
+                    </div>
+                    <div class="text-right">
+                        <span class="text-xs text-slate-500 block">Serapan</span>
+                        <span class="text-lg font-bold text-blue-600" id="rekap2-persen">0%</span>
+                    </div>
+                </div>
+                <div class="mt-4 grid grid-cols-3 gap-2 text-xs pt-3 border-t border-slate-100">
+                    <div>
+                        <span class="text-slate-400 block">Pagu</span>
+                        <span class="font-semibold text-slate-700" id="rekap2-pagu">Rp 0</span>
+                    </div>
+                    <div>
+                        <span class="text-slate-400 block">Realisasi</span>
+                        <span class="font-semibold text-blue-600" id="rekap2-realisasi">Rp 0</span>
+                    </div>
+                    <div>
+                        <span class="text-slate-400 block">Sisa</span>
+                        <span class="font-semibold text-amber-600" id="rekap2-sisa">Rp 0</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Section Graphic Chart -->
+        <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-200/80 mb-6 no-print">
+            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 gap-2">
+                <div>
+                    <h3 class="font-bold text-slate-800">Grafik Tren Realisasi Belanja Bulanan</h3>
+                    <p class="text-xs text-slate-500">Perbandingan pengeluaran bulanan (Januari - Desember)</p>
+                </div>
+            </div>
+            <div class="h-64 sm:h-72 w-full">
+                <canvas id="monthlyChart"></canvas>
+            </div>
+        </div>
+
+        <!-- Data Table Container -->
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-200/80 card-shadow overflow-hidden">
+            <!-- Table Action & Filters -->
+            <div class="p-4 sm:p-5 border-b border-slate-200/80 flex flex-col md:flex-row justify-between items-stretch md:items-center gap-4 no-print">
+                <div class="flex items-center space-x-2">
+                    <h3 class="font-bold text-slate-800 text-base">Monitoring Progres Anggaran</h3>
+                    <span class="bg-slate-100 text-slate-600 text-xs px-2.5 py-1 rounded-full font-medium" id="activity-count">0 Kegiatan</span>
+                </div>
+                
+                <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
+                    <!-- Search Field -->
+                    <div class="relative">
+                        <i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-xs"></i>
+                        <input type="text" id="search-input" oninput="renderTable()" placeholder="Cari kegiatan/kode..." class="w-full sm:w-60 pl-9 pr-3 py-1.5 text-xs bg-slate-50 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                    </div>
+
+                    <!-- Group Filter -->
+                    <select id="filter-group" onchange="renderTable()" class="bg-slate-50 border border-slate-300 text-slate-700 text-xs rounded-lg px-3 py-1.5 focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                        <option value="ALL">Semua Kelompok Belanja</option>
+                        <option value="Belanja Bahan Pelayanan Kesehatan">Belanja Bahan Pelayanan Kesehatan</option>
+                        <option value="Belanja Barang Administrasi Umum">Belanja Barang Administrasi Umum</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Table -->
+            <div class="overflow-x-auto custom-scrollbar">
+                <table class="w-full text-left border-collapse text-xs">
+                    <thead>
+                        <tr class="bg-slate-50 text-slate-600 border-b border-slate-200 font-semibold">
+                            <th class="p-3 text-center w-10">No</th>
+                            <th class="p-3">Kode / Sub-Kegiatan</th>
+                            <th class="p-3">Kelompok Belanja</th>
+                            <th class="p-3 text-right">Pagu Anggaran</th>
+                            <th class="p-3 text-right">Realisasi Kumulatif</th>
+                            <th class="p-3 text-right">Sisa Anggaran</th>
+                            <th class="p-3 text-center min-w-[120px]">Progres Serapan</th>
+                            <th class="p-3 text-center no-print w-28">Aksi / Edit</th>
+                        </tr>
+                    </thead>
+                    <tbody id="table-body" class="divide-y divide-slate-100">
+                        <!-- Table rows populated dynamically -->
+                    </tbody>
+                    <tfoot id="table-foot" class="bg-slate-50 font-bold border-t-2 border-slate-200">
+                        <!-- Table footer populated dynamically -->
+                    </tfoot>
+                </table>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-white border-t border-slate-200 mt-10 py-4 no-print">
+        <div class="max-w-7xl mx-auto px-4 text-center text-xs text-slate-500">
+            &copy; 2026 Sistem Monitoring Realisasi Belanja Makan Minum Pasien.
+        </div>
+    </footer>
+
+    <!-- MODAL FORM: Tambah / Edit Kegiatan -->
+    <div id="modal-kegiatan" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-50 flex items-center justify-center hidden p-4 no-print overflow-y-auto">
+        <div class="bg-white rounded-2xl shadow-xl w-full max-w-3xl my-8 overflow-hidden transform transition-all">
+            
+            <!-- Modal Header -->
+            <div class="bg-emerald-800 text-white px-6 py-4 flex justify-between items-center">
+                <h3 class="font-bold text-lg" id="modal-title">Form Input Realisasi Anggaran</h3>
+                <button onclick="closeModal()" class="text-emerald-200 hover:text-white transition-colors">
+                    <i class="fa-solid fa-xmark text-xl"></i>
+                </button>
+            </div>
+
+            <!-- Modal Form Body -->
+            <form id="form-kegiatan" onsubmit="saveKegiatan(event)" class="p-6 space-y-4">
+                <input type="hidden" id="edit-id" value="">
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-700 mb-1">Kode Sub-Kegiatan / Rekening *</label>
+                        <input type="text" id="form-kode" required placeholder="Contoh: 5.1.02.01.01.0026" class="w-full text-xs px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-700 mb-1">Kelompok Belanja *</label>
+                        <select id="form-kelompok" required class="w-full text-xs px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:outline-none">
+                            <option value="Belanja Bahan Pelayanan Kesehatan">Belanja Bahan Pelayanan Kesehatan</option>
+                            <option value="Belanja Barang Administrasi Umum">Belanja Barang Administrasi Umum</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-semibold text-slate-700 mb-1">Nama Kegiatan / Uraian Belanja *</label>
+                    <input type="text" id="form-nama" required placeholder="Contoh: Pengadaan Bahan Makanan Basah Pasien Rawat Inap" class="w-full text-xs px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:outline-none">
+                </div>
+
+                <div>
+                    <label class="block text-xs font-semibold text-slate-700 mb-1">Pagu Anggaran (Rp) *</label>
+                    <input type="number" id="form-pagu" min="0" required placeholder="0" class="w-full text-xs px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:outline-none">
+                </div>
+
+                <!-- Section Input Realisasi Bulanan Januari-Desember -->
+                <div class="border-t border-slate-200 pt-4 mt-2">
+                    <div class="flex justify-between items-center mb-2">
+                        <label class="block text-xs font-bold text-slate-800">Rincian Realisasi Keuangan Bulanan (Rp)</label>
+                        <span class="text-[11px] text-emerald-600 font-semibold" id="form-total-preview">Total Realisasi: Rp 0</span>
+                    </div>
+
+                    <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3 bg-slate-50 p-4 rounded-xl border border-slate-200">
+                        <div>
+                            <label class="block text-[11px] text-slate-600 mb-1">Januari</label>
+                            <input type="number" id="m-0" min="0" value="0" oninput="updateFormPreview()" class="w-full text-xs px-2.5 py-1.5 border border-slate-300 rounded focus:ring-1 focus:ring-emerald-500">
+                        </div>
+                        <div>
+                            <label class="block text-[11px] text-slate-600 mb-1">Februari</label>
+                            <input type="number" id="m-1" min="0" value="0" oninput="updateFormPreview()" class="w-full text-xs px-2.5 py-1.5 border border-slate-300 rounded focus:ring-1 focus:ring-emerald-500">
+                        </div>
+                        <div>
+                            <label class="block text-[11px] text-slate-600 mb-1">Maret</label>
+                            <input type="number" id="m-2" min="0" value="0" oninput="updateFormPreview()" class="w-full text-xs px-2.5 py-1.5 border border-slate-300 rounded focus:ring-1 focus:ring-emerald-500">
+                        </div>
+                        <div>
+                            <label class="block text-[11px] text-slate-600 mb-1">April</label>
+                            <input type="number" id="m-3" min="0" value="0" oninput="updateFormPreview()" class="w-full text-xs px-2.5 py-1.5 border border-slate-300 rounded focus:ring-1 focus:ring-emerald-500">
+                        </div>
+                        <div>
+                            <label class="block text-[11px] text-slate-600 mb-1">Mei</label>
+                            <input type="number" id="m-4" min="0" value="0" oninput="updateFormPreview()" class="w-full text-xs px-2.5 py-1.5 border border-slate-300 rounded focus:ring-1 focus:ring-emerald-500">
+                        </div>
+                        <div>
+                            <label class="block text-[11px] text-slate-600 mb-1">Juni</label>
+                            <input type="number" id="m-5" min="0" value="0" oninput="updateFormPreview()" class="w-full text-xs px-2.5 py-1.5 border border-slate-300 rounded focus:ring-1 focus:ring-emerald-500">
+                        </div>
+                        <div>
+                            <label class="block text-[11px] text-slate-600 mb-1">Juli</label>
+                            <input type="number" id="m-6" min="0" value="0" oninput="updateFormPreview()" class="w-full text-xs px-2.5 py-1.5 border border-slate-300 rounded focus:ring-1 focus:ring-emerald-500">
+                        </div>
+                        <div>
+                            <label class="block text-[11px] text-slate-600 mb-1">Agustus</label>
+                            <input type="number" id="m-7" min="0" value="0" oninput="updateFormPreview()" class="w-full text-xs px-2.5 py-1.5 border border-slate-300 rounded focus:ring-1 focus:ring-emerald-500">
+                        </div>
+                        <div>
+                            <label class="block text-[11px] text-slate-600 mb-1">September</label>
+                            <input type="number" id="m-8" min="0" value="0" oninput="updateFormPreview()" class="w-full text-xs px-2.5 py-1.5 border border-slate-300 rounded focus:ring-1 focus:ring-emerald-500">
+                        </div>
+                        <div>
+                            <label class="block text-[11px] text-slate-600 mb-1">Oktober</label>
+                            <input type="number" id="m-9" min="0" value="0" oninput="updateFormPreview()" class="w-full text-xs px-2.5 py-1.5 border border-slate-300 rounded focus:ring-1 focus:ring-emerald-500">
+                        </div>
+                        <div>
+                            <label class="block text-[11px] text-slate-600 mb-1">November</label>
+                            <input type="number" id="m-10" min="0" value="0" oninput="updateFormPreview()" class="w-full text-xs px-2.5 py-1.5 border border-slate-300 rounded focus:ring-1 focus:ring-emerald-500">
+                        </div>
+                        <div>
+                            <label class="block text-[11px] text-slate-600 mb-1">Desember</label>
+                            <input type="number" id="m-11" min="0" value="0" oninput="updateFormPreview()" class="w-full text-xs px-2.5 py-1.5 border border-slate-300 rounded focus:ring-1 focus:ring-emerald-500">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Form Action Buttons -->
+                <div class="flex justify-end space-x-3 pt-4 border-t border-slate-200">
+                    <button type="button" onclick="closeModal()" class="px-4 py-2 text-xs font-medium text-slate-600 bg-slate-100 hover:bg-slate-200 rounded-lg transition-colors">
+                        Batal
+                    </button>
+                    <button type="submit" class="px-4 py-2 text-xs font-medium text-white bg-emerald-600 hover:bg-emerald-500 rounded-lg transition-colors shadow-sm">
+                        <i class="fa-solid fa-floppy-disk mr-1.5"></i> Simpan Data
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- MODAL DETAIL & EDIT EDITABLE BULANAN -->
+    <div id="modal-detail" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-50 flex items-center justify-center hidden p-4 no-print overflow-y-auto">
+        <div class="bg-white rounded-2xl shadow-xl w-full max-w-4xl my-8 overflow-hidden">
+            <div class="bg-slate-800 text-white px-6 py-4 flex justify-between items-center">
+                <div>
+                    <h3 class="font-bold text-base" id="detail-title">Rincian & Edit Realisasi Bulanan</h3>
+                    <p class="text-xs text-slate-300" id="detail-subtitle"></p>
+                </div>
+                <button onclick="closeDetailModal()" class="text-slate-400 hover:text-white">
+                    <i class="fa-solid fa-xmark text-xl"></i>
+                </button>
+            </div>
+            
+            <div class="p-6">
+                <!-- Summary bar -->
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 bg-slate-50 p-4 rounded-xl border border-slate-200 mb-4 text-xs">
+                    <div><span class="text-slate-500 block">Pagu Anggaran:</span> <span class="font-bold text-slate-800 text-sm" id="detail-pagu">Rp 0</span></div>
+                    <div><span class="text-slate-500 block">Realisasi Kumulatif:</span> <span class="font-bold text-emerald-600 text-sm" id="detail-realisasi">Rp 0</span></div>
+                    <div><span class="text-slate-500 block">Sisa Anggaran:</span> <span class="font-bold text-amber-600 text-sm" id="detail-sisa">Rp 0</span></div>
+                </div>
+
+                <!-- Monthly table -->
+                <div class="overflow-x-auto border border-slate-200 rounded-xl mb-4">
+                    <table class="w-full text-xs text-left">
+                        <thead class="bg-slate-100 font-semibold text-slate-700">
+                            <tr>
+                                <th class="p-2.5">Bulan</th>
+                                <th class="p-2.5 text-right">Realisasi Bulanan (Rp)</th>
+                                <th class="p-2.5 text-right">Kumulatif (Rp)</th>
+                                <th class="p-2.5 text-right">Serapan (%)</th>
+                            </tr>
+                        </thead>
+                        <tbody id="detail-monthly-body" class="divide-y divide-slate-100">
+                            <!-- Populated dynamically -->
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="flex justify-between items-center">
+                    <button onclick="quickEditFromDetail()" class="px-4 py-2 text-xs font-semibold text-emerald-700 bg-emerald-50 hover:bg-emerald-100 rounded-lg">
+                        <i class="fa-solid fa-pen-to-square mr-1"></i> Edit Lengkap Kegiatan Ini
+                    </button>
+                    <button onclick="closeDetailModal()" class="px-4 py-2 text-xs font-medium bg-slate-800 text-white rounded-lg">
+                        Tutup
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Application Script Logic -->
+    <script>
+        // Sample Initial Data for Makan Minum Pasien
+        const initialKegiatanData = [
+            {
+                id: "keg-1",
+                kode: "5.1.02.01.01.0026",
+                nama: "Pengadaan Bahan Makanan Basah Pasien (Daging, Ikan, Sayur, Buah)",
+                kelompok: "Belanja Bahan Pelayanan Kesehatan",
+                pagu: 450000000,
+                monthly: [32000000, 31500000, 35000000, 34000000, 36500000, 33000000, 37000000, 35500000, 34500000, 36000000, 33500000, 38000000]
+            },
+            {
+                id: "keg-2",
+                kode: "5.1.02.01.01.0027",
+                nama: "Pengadaan Bahan Makanan Kering Pasien (Beras, Minyak, Gula, Susu Formula Khusus)",
+                kelompok: "Belanja Bahan Pelayanan Kesehatan",
+                pagu: 300000000,
+                monthly: [22000000, 21000000, 24000000, 23000000, 25000000, 22500000, 24500000, 23500000, 22000000, 24000000, 21500000, 26000000]
+            },
+            {
+                id: "keg-3",
+                kode: "5.1.02.01.01.0028",
+                nama: "Pengadaan Gas Elpiji & Bahan Bakar Dapur Instalasi Gizi Pasien",
+                kelompok: "Belanja Bahan Pelayanan Kesehatan",
+                pagu: 60000000,
+                monthly: [4500000, 4200000, 4800000, 4600000, 5000000, 4700000, 4900000, 4600000, 4500000, 4800000, 4400000, 5000000]
+            },
+            {
+                id: "keg-4",
+                kode: "5.1.02.01.01.0001",
+                nama: "Belanja Alat Tulis Kantor (ATK) & Form Rekam Asuhan Gizi Pasien",
+                kelompok: "Belanja Barang Administrasi Umum",
+                pagu: 25000000,
+                monthly: [1500000, 1200000, 2000000, 1800000, 1500000, 2200000, 1700000, 1600000, 1900000, 1500000, 1400000, 2100000]
+            },
+            {
+                id: "keg-5",
+                kode: "5.1.02.01.01.0004",
+                nama: "Belanja Cetak Etiket Diet Pasien & Banner Edukasi Nutrisi",
+                kelompok: "Belanja Barang Administrasi Umum",
+                pagu: 15000000,
+                monthly: [1000000, 800000, 1200000, 950000, 1100000, 1300000, 1000000, 900000, 1150000, 1000000, 900000, 1500000]
+            },
+            {
+                id: "keg-6",
+                kode: "5.1.02.01.01.0005",
+                nama: "Belanja Bahan Kebersihan, Sanitasi & Disinfektan Dapur Gizi Pasien",
+                kelompok: "Belanja Barang Administrasi Umum",
+                pagu: 40000000,
+                monthly: [3000000, 2800000, 3200000, 3100000, 3300000, 2900000, 3400000, 3000000, 3100000, 3200000, 2900000, 3500000]
+            }
+        ];
+
+        const monthNames = ["Jan", "Feb", "Mar", "Apr", "Mei", "Jun", "Jul", "Agt", "Sep", "Okt", "Nov", "Des"];
+        const fullMonthNames = ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"];
+
+        let kegiatanList = [];
+        let chartInstance = null;
+        let activeDetailId = null;
+
+        // Initialize Application State
+        window.onload = function() {
+            loadDataFromStorage();
+            document.getElementById('print-date').innerText = new Date().toLocaleDateString('id-ID', { dateStyle: 'full' });
+            initChart();
+            renderAll();
+        };
+
+        // Storage Operations
+        function loadDataFromStorage() {
+            const storedData = localStorage.getItem('sim_makan_minum_pasien_db');
+            if (storedData) {
+                try {
+                    kegiatanList = JSON.parse(storedData);
+                } catch(e) {
+                    kegiatanList = [...initialKegiatanData];
+                }
+            } else {
+                kegiatanList = [...initialKegiatanData];
+                saveDataToStorage();
+            }
+        }
+
+        function saveDataToStorage() {
+            localStorage.setItem('sim_makan_minum_pasien_db', JSON.stringify(kegiatanList));
+        }
+
+        function resetToDefaultData() {
+            if (confirm("Apakah Anda yakin ingin mengembalikan data awal sampel? Perubahan yang disimpan akan diganti.")) {
+                kegiatanList = JSON.parse(JSON.stringify(initialKegiatanData));
+                saveDataToStorage();
+                renderAll();
+                showToast("Data telah berhasil di-reset ke sampel awal", "success");
+            }
+        }
+
+        // Helper Formatters
+        function formatRupiah(number) {
+            return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', maximumFractionDigits: 0 }).format(number);
+        }
+
+        function calculateCumulative(monthlyArray) {
+            return monthlyArray.reduce((acc, curr) => acc + Number(curr || 0), 0);
+        }
+
+        // Core Render Function
+        function renderAll() {
+            renderTable();
+            renderCards();
+            updateChart();
+        }
+
+        // Render Summary Cards
+        function renderCards() {
+            let totalPagu = 0;
+            let totalRealisasi = 0;
+
+            let group1 = { pagu: 0, realisasi: 0 }; // Belanja Bahan Pelayanan Kesehatan
+            let group2 = { pagu: 0, realisasi: 0 }; // Belanja Barang Administrasi Umum
+
+            kegiatanList.forEach(item => {
+                const realisasi = calculateCumulative(item.monthly);
+                const pagu = Number(item.pagu || 0);
+
+                totalPagu += pagu;
+                totalRealisasi += realisasi;
+
+                if (item.kelompok === "Belanja Bahan Pelayanan Kesehatan") {
+                    group1.pagu += pagu;
+                    group1.realisasi += realisasi;
+                } else if (item.kelompok === "Belanja Barang Administrasi Umum") {
+                    group2.pagu += pagu;
+                    group2.realisasi += realisasi;
+                }
+            });
+
+            const totalSisa = totalPagu - totalRealisasi;
+            const serapanTotal = totalPagu > 0 ? ((totalRealisasi / totalPagu) * 100).toFixed(2) : 0;
+
+            // Overview
+            document.getElementById('card-total-pagu').innerText = formatRupiah(totalPagu);
+            document.getElementById('card-total-realisasi').innerText = formatRupiah(totalRealisasi);
+            document.getElementById('card-total-sisa').innerText = formatRupiah(totalSisa);
+            document.getElementById('card-serapan-total').innerText = `${serapanTotal}%`;
+
+            // Group 1
+            const g1Sisa = group1.pagu - group1.realisasi;
+            const g1Serapan = group1.pagu > 0 ? ((group1.realisasi / group1.pagu) * 100).toFixed(1) : 0;
+            document.getElementById('rekap1-pagu').innerText = formatRupiah(group1.pagu);
+            document.getElementById('rekap1-realisasi').innerText = formatRupiah(group1.realisasi);
+            document.getElementById('rekap1-sisa').innerText = formatRupiah(g1Sisa);
+            document.getElementById('rekap1-persen').innerText = `${g1Serapan}%`;
+
+            // Group 2
+            const g2Sisa = group2.pagu - group2.realisasi;
+            const g2Serapan = group2.pagu > 0 ? ((group2.realisasi / group2.pagu) * 100).toFixed(1) : 0;
+            document.getElementById('rekap2-pagu').innerText = formatRupiah(group2.pagu);
+            document.getElementById('rekap2-realisasi').innerText = formatRupiah(group2.realisasi);
+            document.getElementById('rekap2-sisa').innerText = formatRupiah(g2Sisa);
+            document.getElementById('rekap2-persen').innerText = `${g2Serapan}%`;
+        }
+
+        // Render Data Table
+        function renderTable() {
+            const tbody = document.getElementById('table-body');
+            const tfoot = document.getElementById('table-foot');
+            const searchQuery = document.getElementById('search-input').value.toLowerCase();
+            const groupFilter = document.getElementById('filter-group').value;
+
+            tbody.innerHTML = '';
+
+            const filteredData = kegiatanList.filter(item => {
+                const matchSearch = item.nama.toLowerCase().includes(searchQuery) || item.kode.toLowerCase().includes(searchQuery);
+                const matchGroup = groupFilter === 'ALL' || item.kelompok === groupFilter;
+                return matchSearch && matchGroup;
+            });
+
+            document.getElementById('activity-count').innerText = `${filteredData.length} Kegiatan`;
+
+            if (filteredData.length === 0) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="8" class="text-center py-8 text-slate-400">
+                            <i class="fa-solid fa-folder-open text-3xl mb-2 block"></i>
+                            Tidak ada data kegiatan yang ditemukan.
+                        </td>
+                    </tr>
+                `;
+                tfoot.innerHTML = '';
+                return;
+            }
+
+            let sumPagu = 0;
+            let sumRealisasi = 0;
+
+            filteredData.forEach((item, index) => {
+                const realisasi = calculateCumulative(item.monthly);
+                const pagu = Number(item.pagu || 0);
+                const sisa = pagu - realisasi;
+                const serapan = pagu > 0 ? ((realisasi / pagu) * 100).toFixed(1) : 0;
+
+                sumPagu += pagu;
+                sumRealisasi += realisasi;
+
+                // Color code serapan
+                let badgeClass = "bg-slate-100 text-slate-700";
+                let barClass = "bg-slate-500";
+                if (serapan >= 80) {
+                    badgeClass = "bg-emerald-100 text-emerald-800";
+                    barClass = "bg-emerald-500";
+                } else if (serapan >= 50) {
+                    badgeClass = "bg-blue-100 text-blue-800";
+                    barClass = "bg-blue-500";
+                } else if (serapan > 0) {
+                    badgeClass = "bg-amber-100 text-amber-800";
+                    barClass = "bg-amber-500";
+                }
+
+                const tr = document.createElement('tr');
+                tr.className = "hover:bg-slate-50/80 transition-colors";
+                tr.innerHTML = `
+                    <td class="p-3 text-center font-medium text-slate-500">${index + 1}</td>
+                    <td class="p-3">
+                        <div class="font-bold text-slate-800 cursor-pointer hover:text-emerald-700" onclick="showDetailModal('${item.id}')">${item.nama}</div>
+                        <div class="text-[11px] text-slate-400 font-mono mt-0.5">${item.kode}</div>
+                    </td>
+                    <td class="p-3">
+                        <span class="inline-block px-2 py-0.5 text-[10px] font-semibold rounded ${item.kelompok === 'Belanja Bahan Pelayanan Kesehatan' ? 'bg-emerald-100 text-emerald-800' : 'bg-blue-100 text-blue-800'}">
+                            ${item.kelompok}
+                        </span>
+                    </td>
+                    <td class="p-3 text-right font-medium text-slate-700">${formatRupiah(pagu)}</td>
+                    <td class="p-3 text-right font-semibold text-emerald-600">${formatRupiah(realisasi)}</td>
+                    <td class="p-3 text-right font-medium text-amber-600">${formatRupiah(sisa)}</td>
+                    <td class="p-3 text-center">
+                        <div class="flex items-center space-x-2">
+                            <div class="w-full bg-slate-200 rounded-full h-2 overflow-hidden">
+                                <div class="${barClass} h-2 rounded-full" style="width: ${Math.min(serapan, 100)}%"></div>
+                            </div>
+                            <span class="text-[11px] font-semibold min-w-[35px] text-right">${serapan}%</span>
+                        </div>
+                    </td>
+                    <td class="p-3 text-center no-print">
+                        <div class="flex items-center justify-center space-x-1.5">
+                            <button onclick="showDetailModal('${item.id}')" class="p-1.5 text-slate-500 hover:text-sky-600 hover:bg-sky-50 rounded transition-colors" title="Lihat Rincian">
+                                <i class="fa-solid fa-eye"></i>
+                            </button>
+                            <button onclick="editKegiatan('${item.id}')" class="p-1.5 text-slate-500 hover:text-emerald-600 hover:bg-emerald-50 rounded transition-colors" title="Edit Kegiatan">
+                                <i class="fa-solid fa-pen"></i>
+                            </button>
+                            <button onclick="deleteKegiatan('${item.id}')" class="p-1.5 text-slate-500 hover:text-red-600 hover:bg-red-50 rounded transition-colors" title="Hapus Kegiatan">
+                                <i class="fa-solid fa-trash-can"></i>
+                            </button>
+                        </div>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+
+            // Footer Totals
+            const totalSisa = sumPagu - sumRealisasi;
+            const totalSerapan = sumPagu > 0 ? ((sumRealisasi / sumPagu) * 100).toFixed(1) : 0;
+
+            tfoot.innerHTML = `
+                <tr>
+                    <td colspan="3" class="p-3 text-slate-700 uppercase tracking-wider text-right">TOTAL KESELURUHAN</td>
+                    <td class="p-3 text-right text-slate-800 font-bold">${formatRupiah(sumPagu)}</td>
+                    <td class="p-3 text-right text-emerald-700 font-bold">${formatRupiah(sumRealisasi)}</td>
+                    <td class="p-3 text-right text-amber-700 font-bold">${formatRupiah(totalSisa)}</td>
+                    <td class="p-3 text-center text-emerald-800 font-bold">${totalSerapan}%</td>
+                    <td class="p-3 no-print"></td>
+                </tr>
+            `;
+        }
+
+        // Initialize & Update Chart.js
+        function initChart() {
+            const ctx = document.getElementById('monthlyChart').getContext('2d');
+            chartInstance = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: monthNames,
+                    datasets: [
+                        {
+                            label: 'Belanja Bahan Pelayanan Kesehatan',
+                            data: Array(12).fill(0),
+                            backgroundColor: '#059669',
+                            borderRadius: 4
+                        },
+                        {
+                            label: 'Belanja Barang Administrasi Umum',
+                            data: Array(12).fill(0),
+                            backgroundColor: '#2563eb',
+                            borderRadius: 4
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { position: 'top', labels: { boxWidth: 12, font: { size: 11 } } },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    let label = context.dataset.label || '';
+                                    if (label) label += ': ';
+                                    if (context.parsed.y !== null) {
+                                        label += formatRupiah(context.parsed.y);
+                                    }
+                                    return label;
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            ticks: {
+                                callback: function(value) {
+                                    return 'Rp ' + (value / 1000000).toLocaleString('id-ID') + ' Jt';
+                                },
+                                font: { size: 10 }
+                            },
+                            grid: { color: '#f1f5f9' }
+                        },
+                        x: { grid: { display: false } }
+                    }
+                }
+            });
+        }
+
+        function updateChart() {
+            if (!chartInstance) return;
+
+            const group1Monthly = Array(12).fill(0);
+            const group2Monthly = Array(12).fill(0);
+
+            kegiatanList.forEach(item => {
+                item.monthly.forEach((val, monthIdx) => {
+                    const amount = Number(val || 0);
+                    if (item.kelompok === 'Belanja Bahan Pelayanan Kesehatan') {
+                        group1Monthly[monthIdx] += amount;
+                    } else if (item.kelompok === 'Belanja Barang Administrasi Umum') {
+                        group2Monthly[monthIdx] += amount;
+                    }
+                });
+            });
+
+            chartInstance.data.datasets[0].data = group1Monthly;
+            chartInstance.data.datasets[1].data = group2Monthly;
+            chartInstance.update();
+        }
+
+        // Modal Operations (Add / Edit)
+        function openModal() {
+            document.getElementById('form-kegiatan').reset();
+            document.getElementById('edit-id').value = '';
+            document.getElementById('modal-title').innerText = 'Tambah Kegiatan Baru';
+            updateFormPreview();
+            document.getElementById('modal-kegiatan').classList.remove('hidden');
+        }
+
+        function closeModal() {
+            document.getElementById('modal-kegiatan').classList.add('hidden');
+        }
+
+        function updateFormPreview() {
+            let total = 0;
+            for (let i = 0; i < 12; i++) {
+                const val = Number(document.getElementById(`m-${i}`).value || 0);
+                total += val;
+            }
+            document.getElementById('form-total-preview').innerText = `Total Realisasi: ${formatRupiah(total)}`;
+        }
+
+        function saveKegiatan(e) {
+            e.preventDefault();
+
+            const editId = document.getElementById('edit-id').value;
+            const kode = document.getElementById('form-kode').value;
+            const nama = document.getElementById('form-nama').value;
+            const kelompok = document.getElementById('form-kelompok').value;
+            const pagu = Number(document.getElementById('form-pagu').value || 0);
+
+            const monthly = [];
+            for (let i = 0; i < 12; i++) {
+                monthly.push(Number(document.getElementById(`m-${i}`).value || 0));
+            }
+
+            if (editId) {
+                // Update
+                const index = kegiatanList.findIndex(k => k.id === editId);
+                if (index !== -1) {
+                    kegiatanList[index] = { id: editId, kode, nama, kelompok, pagu, monthly };
+                    showToast('Kegiatan berhasil diperbarui!', 'success');
+                }
+            } else {
+                // Insert New
+                const newId = 'keg-' + Date.now();
+                kegiatanList.push({ id: newId, kode, nama, kelompok, pagu, monthly });
+                showToast('Kegiatan baru berhasil ditambahkan!', 'success');
+            }
+
+            saveDataToStorage();
+            renderAll();
+            closeModal();
+        }
+
+        function editKegiatan(id) {
+            const item = kegiatanList.find(k => k.id === id);
+            if (!item) return;
+
+            document.getElementById('edit-id').value = item.id;
+            document.getElementById('form-kode').value = item.kode;
+            document.getElementById('form-nama').value = item.nama;
+            document.getElementById('form-kelompok').value = item.kelompok;
+            document.getElementById('form-pagu').value = item.pagu;
+
+            item.monthly.forEach((val, idx) => {
+                document.getElementById(`m-${idx}`).value = val;
+            });
+
+            document.getElementById('modal-title').innerText = 'Edit Data Kegiatan';
+            updateFormPreview();
+            document.getElementById('modal-kegiatan').classList.remove('hidden');
+        }
+
+        function deleteKegiatan(id) {
+            if (confirm('Apakah Anda yakin ingin menghapus data kegiatan ini?')) {
+                kegiatanList = kegiatanList.filter(k => k.id !== id);
+                saveDataToStorage();
+                renderAll();
+                showToast('Kegiatan berhasil dihapus!', 'warning');
+            }
+        }
+
+        // Modal Rincian & Quick Edit
+        function showDetailModal(id) {
+            const item = kegiatanList.find(k => k.id === id);
+            if (!item) return;
+
+            activeDetailId = id;
+            document.getElementById('detail-title').innerText = item.nama;
+            document.getElementById('detail-subtitle').innerText = `${item.kode} | ${item.kelompok}`;
+
+            const realisasi = calculateCumulative(item.monthly);
+            const pagu = Number(item.pagu || 0);
+            const sisa = pagu - realisasi;
+
+            document.getElementById('detail-pagu').innerText = formatRupiah(pagu);
+            document.getElementById('detail-realisasi').innerText = formatRupiah(realisasi);
+            document.getElementById('detail-sisa').innerText = formatRupiah(sisa);
+
+            const tbody = document.getElementById('detail-monthly-body');
+            tbody.innerHTML = '';
+
+            let runCumulative = 0;
+            fullMonthNames.forEach((mName, idx) => {
+                const val = Number(item.monthly[idx] || 0);
+                runCumulative += val;
+                const pct = pagu > 0 ? ((runCumulative / pagu) * 100).toFixed(1) : 0;
+
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td class="p-2.5 font-medium text-slate-700">${mName}</td>
+                    <td class="p-2.5 text-right font-semibold text-slate-800">${formatRupiah(val)}</td>
+                    <td class="p-2.5 text-right font-medium text-emerald-600">${formatRupiah(runCumulative)}</td>
+                    <td class="p-2.5 text-right font-medium text-slate-600">${pct}%</td>
+                `;
+                tbody.appendChild(tr);
+            });
+
+            document.getElementById('modal-detail').classList.remove('hidden');
+        }
+
+        function closeDetailModal() {
+            document.getElementById('modal-detail').classList.add('hidden');
+            activeDetailId = null;
+        }
+
+        function quickEditFromDetail() {
+            if (activeDetailId) {
+                const idToEdit = activeDetailId;
+                closeDetailModal();
+                editKegiatan(idToEdit);
+            }
+        }
+
+        // CSV Export Feature
+        function exportCSV() {
+            let csvContent = "data:text/csv;charset=utf-8,";
+            csvContent += "No,Kode,Kelompok Belanja,Nama Kegiatan,Pagu Anggaran,";
+            monthNames.forEach(m => csvContent += `Realisasi ${m},`);
+            csvContent += "Total Realisasi Kumulatif,Sisa Anggaran,Persentase Serapan (%)\n";
+
+            kegiatanList.forEach((item, index) => {
+                const totalRealisasi = calculateCumulative(item.monthly);
+                const sisa = item.pagu - totalRealisasi;
+                const serapan = item.pagu > 0 ? ((totalRealisasi / item.pagu) * 100).toFixed(2) : 0;
+
+                let row = `"${index + 1}","${item.kode}","${item.kelompok}","${item.nama.replace(/"/g, '""')}",${item.pagu},`;
+                item.monthly.forEach(val => row += `${val},`);
+                row += `${totalRealisasi},${sisa},${serapan}\n`;
+
+                csvContent += row;
+            });
+
+            const encodedUri = encodeURI(csvContent);
+            const link = document.createElement("a");
+            link.setAttribute("href", encodedUri);
+            link.setAttribute("download", `Laporan_Realisasi_Makan_Minum_Pasien_${new Date().toISOString().slice(0,10)}.csv`);
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+
+            showToast("Berhasil mengekspor data ke CSV/Excel", "success");
+        }
+
+        // JSON Backup & Restore
+        function toggleBackupMenu() {
+            const menu = document.getElementById('backup-menu');
+            menu.classList.toggle('hidden');
+        }
+
+        function exportBackupJSON() {
+            const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(kegiatanList, null, 2));
+            const downloadAnchor = document.createElement('a');
+            downloadAnchor.setAttribute("href", dataStr);
+            downloadAnchor.setAttribute("download", `BACKUP_SIM_MAKAN_MINUM_${new Date().toISOString().slice(0,10)}.json`);
+            document.body.appendChild(downloadAnchor);
+            downloadAnchor.click();
+            downloadAnchor.remove();
+            showToast("File pencadangan JSON berhasil diunduh!", "success");
+        }
+
+        function importBackupJSON(event) {
+            const fileReader = new FileReader();
+            fileReader.onload = function(e) {
+                try {
+                    const parsedData = JSON.parse(e.target.result);
+                    if (Array.isArray(parsedData)) {
+                        kegiatanList = parsedData;
+                        saveDataToStorage();
+                        renderAll();
+                        showToast("Data pencadangan berhasil dipulihkan!", "success");
+                    } else {
+                        showToast("Format berkas JSON tidak valid!", "danger");
+                    }
+                } catch(err) {
+                    showToast("Gagal membaca berkas JSON!", "danger");
+                }
+            };
+            fileReader.readAsText(event.target.files[0]);
+        }
+
+        // Custom Toast Notification
+        function showToast(message, type = 'info') {
+            const toast = document.getElementById('toast');
+            const toastMsg = document.getElementById('toast-msg');
+            const toastIcon = document.getElementById('toast-icon');
+
+            toastMsg.innerText = message;
+
+            if (type === 'success') {
+                toastIcon.className = "inline-flex items-center justify-center flex-shrink-0 w-8 h-8 rounded-lg bg-emerald-100 text-emerald-600";
+                toastIcon.innerHTML = '<i class="fa-solid fa-check"></i>';
+            } else if (type === 'warning') {
+                toastIcon.className = "inline-flex items-center justify-center flex-shrink-0 w-8 h-8 rounded-lg bg-amber-100 text-amber-600";
+                toastIcon.innerHTML = '<i class="fa-solid fa-triangle-exclamation"></i>';
+            } else if (type === 'danger') {
+                toastIcon.className = "inline-flex items-center justify-center flex-shrink-0 w-8 h-8 rounded-lg bg-red-100 text-red-600";
+                toastIcon.innerHTML = '<i class="fa-solid fa-xmark"></i>';
+            } else {
+                toastIcon.className = "inline-flex items-center justify-center flex-shrink-0 w-8 h-8 rounded-lg bg-blue-100 text-blue-600";
+                toastIcon.innerHTML = '<i class="fa-solid fa-info"></i>';
+            }
+
+            toast.classList.remove('translate-y-[-100px]', 'opacity-0');
+            toast.classList.add('translate-y-0', 'opacity-100');
+
+            setTimeout(() => {
+                toast.classList.remove('translate-y-0', 'opacity-100');
+                toast.classList.add('translate-y-[-100px]', 'opacity-0');
+            }, 3000);
+        }
+    </script>
+</body>
+</html>
