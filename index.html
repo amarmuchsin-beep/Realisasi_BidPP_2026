@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sistem Realisasi Belanja Makan Minum Pasien</title>
+    <title>Sistem Realisasi Belanja Perjalanan Dinas 2026</title>
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- FontAwesome Icons -->
@@ -37,20 +37,20 @@
     </div>
 
     <!-- Header / Navbar -->
-    <header class="bg-emerald-800 text-white shadow-md no-print">
+    <header class="bg-indigo-900 text-white shadow-md no-print">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex flex-col sm:flex-row justify-between items-center gap-4">
             <div class="flex items-center space-x-3">
-                <div class="bg-emerald-600 p-2.5 rounded-xl shadow-inner text-white">
-                    <i class="fa-solid fa-utensils text-2xl"></i>
+                <div class="bg-indigo-700 p-2.5 rounded-xl shadow-inner text-white">
+                    <i class="fa-solid fa-plane-departure text-2xl"></i>
                 </div>
                 <div>
-                    <h1 class="text-xl font-bold leading-tight">SIM-MAKAN MINUM PASIEN</h1>
-                    <p class="text-xs text-emerald-200">Realisasi Belanja Bahan Pelayanan Kesehatan & Administrasi Umum</p>
+                    <h1 class="text-xl font-bold leading-tight">SIM-PERJALANAN DINAS 2026</h1>
+                    <p class="text-xs text-indigo-200">Realisasi Belanja Perjalanan Dinas, Workshop, BIMTEK & PMMT</p>
                 </div>
             </div>
             
             <div class="flex flex-wrap items-center gap-2">
-                <button onclick="openModal()" class="bg-emerald-600 hover:bg-emerald-500 text-white font-medium text-xs sm:text-sm px-3.5 py-2 rounded-lg transition-colors duration-200 flex items-center shadow-sm">
+                <button onclick="openModal()" class="bg-indigo-600 hover:bg-indigo-500 text-white font-medium text-xs sm:text-sm px-3.5 py-2 rounded-lg transition-colors duration-200 flex items-center shadow-sm">
                     <i class="fa-solid fa-plus mr-2"></i> Tambah Kegiatan
                 </button>
                 <button onclick="exportCSV()" class="bg-teal-700 hover:bg-teal-600 text-white font-medium text-xs sm:text-sm px-3.5 py-2 rounded-lg transition-colors duration-200 flex items-center shadow-sm">
@@ -59,7 +59,7 @@
                 <button onclick="window.print()" class="bg-sky-700 hover:bg-sky-600 text-white font-medium text-xs sm:text-sm px-3.5 py-2 rounded-lg transition-colors duration-200 flex items-center shadow-sm" title="Cetak atau Simpan PDF">
                     <i class="fa-solid fa-print mr-2"></i> Cetak / PDF
                 </button>
-                <button onclick="toggleBackupMenu()" class="bg-emerald-900 hover:bg-emerald-950 text-white font-medium text-xs sm:text-sm px-3 py-2 rounded-lg transition-colors duration-200 flex items-center">
+                <button onclick="toggleBackupMenu()" class="bg-indigo-950 hover:bg-black text-white font-medium text-xs sm:text-sm px-3 py-2 rounded-lg transition-colors duration-200 flex items-center">
                     <i class="fa-solid fa-database mr-1.5"></i> Data
                 </button>
             </div>
@@ -67,17 +67,17 @@
     </header>
 
     <!-- Sub Header Data Management Dropdown -->
-    <div id="backup-menu" class="hidden bg-emerald-900 text-white border-b border-emerald-700 no-print transition-all duration-300">
+    <div id="backup-menu" class="hidden bg-indigo-950 text-white border-b border-indigo-800 no-print transition-all duration-300">
         <div class="max-w-7xl mx-auto px-4 py-3 flex flex-wrap items-center justify-between gap-4 text-xs">
             <div class="flex items-center space-x-2">
-                <i class="fa-solid fa-hard-drive text-emerald-300"></i>
+                <i class="fa-solid fa-hard-drive text-indigo-300"></i>
                 <span class="font-semibold">Penyimpanan & Pencadangan Data Lokal:</span>
             </div>
             <div class="flex flex-wrap items-center gap-2">
-                <button onclick="exportBackupJSON()" class="bg-emerald-700 hover:bg-emerald-600 px-3 py-1.5 rounded flex items-center">
+                <button onclick="exportBackupJSON()" class="bg-indigo-700 hover:bg-indigo-600 px-3 py-1.5 rounded flex items-center">
                     <i class="fa-solid fa-download mr-1.5"></i> Unduh Cadangan (JSON)
                 </button>
-                <label class="bg-emerald-700 hover:bg-emerald-600 px-3 py-1.5 rounded cursor-pointer flex items-center">
+                <label class="bg-indigo-700 hover:bg-indigo-600 px-3 py-1.5 rounded cursor-pointer flex items-center">
                     <i class="fa-solid fa-upload mr-1.5"></i> Pemulihan (JSON)
                     <input type="file" id="import-file" accept=".json" class="hidden" onchange="importBackupJSON(event)">
                 </label>
@@ -93,8 +93,8 @@
         
         <!-- Print Header Info -->
         <div class="hidden print-only mb-6 text-center border-b pb-4">
-            <h1 class="text-xl font-bold uppercase tracking-wider">Laporan Realisasi Belanja Makan Minum Pasien</h1>
-            <p class="text-xs text-gray-600">Instalasi Gizi & Pelayanan Kesehatan Pasien - Tahun Anggaran 2026</p>
+            <h1 class="text-xl font-bold uppercase tracking-wider">Laporan Realisasi Belanja Perjalanan Dinas & Pelatihan Tahun 2026</h1>
+            <p class="text-xs text-gray-600">Monitoring Kegiatan Workshop, BIMTEK, dan PMMT</p>
             <p class="text-xs text-gray-500 mt-1">Dicetak pada: <span id="print-date"></span></p>
         </div>
 
@@ -107,12 +107,12 @@
                         <p class="text-xs font-semibold uppercase tracking-wider text-slate-500">Total Pagu Anggaran</p>
                         <h3 class="text-2xl font-bold text-slate-800 mt-1" id="card-total-pagu">Rp 0</h3>
                     </div>
-                    <div class="bg-emerald-50 text-emerald-600 p-3 rounded-xl">
+                    <div class="bg-indigo-50 text-indigo-600 p-3 rounded-xl">
                         <i class="fa-solid fa-wallet text-xl"></i>
                     </div>
                 </div>
                 <div class="mt-3 text-xs text-slate-500">
-                    Akumulasi Pagu Makan Minum & Operasional
+                    Akumulasi Pagu Perjalanan Dinas 2026
                 </div>
             </div>
 
@@ -123,7 +123,7 @@
                         <p class="text-xs font-semibold uppercase tracking-wider text-slate-500">Total Realisasi Kumulatif</p>
                         <h3 class="text-2xl font-bold text-emerald-600 mt-1" id="card-total-realisasi">Rp 0</h3>
                     </div>
-                    <div class="bg-teal-50 text-teal-600 p-3 rounded-xl">
+                    <div class="bg-emerald-50 text-emerald-600 p-3 rounded-xl">
                         <i class="fa-solid fa-chart-line text-xl"></i>
                     </div>
                 </div>
@@ -145,29 +145,28 @@
                     </div>
                 </div>
                 <div class="mt-3 text-xs text-slate-500">
-                    Sisa Anggaran Belanja Belum Terealisasi
+                    Sisa Anggaran Belum Terealisasi
                 </div>
             </div>
         </div>
 
-        <!-- 2 Kelompok Belanja Cards Overview -->
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-5 mb-6">
-            <!-- Rekap Belanja Bahan Pelayanan Kesehatan -->
-            <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-200/80 card-shadow border-l-4 border-l-emerald-600">
+        <!-- 3 Kelompok Belanja Cards Overview -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-5 mb-6">
+            <!-- Rekap 1: Workshop / Simposium / Seminar / Rakornas -->
+            <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-200/80 card-shadow border-l-4 border-l-indigo-600">
                 <div class="flex justify-between items-start">
                     <div>
-                        <span class="inline-block px-2.5 py-1 text-xs font-semibold bg-emerald-100 text-emerald-800 rounded-md mb-2">
-                            Kelompok Belanja 1
+                        <span class="inline-block px-2.5 py-1 text-xs font-semibold bg-indigo-100 text-indigo-800 rounded-md mb-2">
+                            Kelompok 1
                         </span>
-                        <h4 class="font-bold text-slate-800">Belanja Bahan Pelayanan Kesehatan</h4>
-                        <p class="text-xs text-slate-500 mt-0.5">(Makan, Minum, Bahan Makanan Pasien)</p>
+                        <h4 class="font-bold text-slate-800 text-sm">Workshop / Seminar / Rakornas</h4>
                     </div>
                     <div class="text-right">
-                        <span class="text-xs text-slate-500 block">Serapan</span>
-                        <span class="text-lg font-bold text-emerald-600" id="rekap1-persen">0%</span>
+                        <span class="text-[11px] text-slate-500 block">Serapan</span>
+                        <span class="text-base font-bold text-indigo-600" id="rekap1-persen">0%</span>
                     </div>
                 </div>
-                <div class="mt-4 grid grid-cols-3 gap-2 text-xs pt-3 border-t border-slate-100">
+                <div class="mt-4 grid grid-cols-3 gap-1 text-[11px] pt-3 border-t border-slate-100">
                     <div>
                         <span class="text-slate-400 block">Pagu</span>
                         <span class="font-semibold text-slate-700" id="rekap1-pagu">Rp 0</span>
@@ -183,22 +182,21 @@
                 </div>
             </div>
 
-            <!-- Rekap Belanja Barang Administrasi Umum -->
+            <!-- Rekap 2: BIMTEK / Kursus / Pelatihan / In House Training / Sosialisasi -->
             <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-200/80 card-shadow border-l-4 border-l-blue-600">
                 <div class="flex justify-between items-start">
                     <div>
                         <span class="inline-block px-2.5 py-1 text-xs font-semibold bg-blue-100 text-blue-800 rounded-md mb-2">
-                            Kelompok Belanja 2
+                            Kelompok 2
                         </span>
-                        <h4 class="font-bold text-slate-800">Belanja Barang Administrasi Umum</h4>
-                        <p class="text-xs text-slate-500 mt-0.5">(ATK, Cetak, Kebersihan & Penunjang Admin)</p>
+                        <h4 class="font-bold text-slate-800 text-sm">BIMTEK / Pelatihan / Sosialisasi</h4>
                     </div>
                     <div class="text-right">
-                        <span class="text-xs text-slate-500 block">Serapan</span>
-                        <span class="text-lg font-bold text-blue-600" id="rekap2-persen">0%</span>
+                        <span class="text-[11px] text-slate-500 block">Serapan</span>
+                        <span class="text-base font-bold text-blue-600" id="rekap2-persen">0%</span>
                     </div>
                 </div>
-                <div class="mt-4 grid grid-cols-3 gap-2 text-xs pt-3 border-t border-slate-100">
+                <div class="mt-4 grid grid-cols-3 gap-1 text-[11px] pt-3 border-t border-slate-100">
                     <div>
                         <span class="text-slate-400 block">Pagu</span>
                         <span class="font-semibold text-slate-700" id="rekap2-pagu">Rp 0</span>
@@ -213,14 +211,44 @@
                     </div>
                 </div>
             </div>
+
+            <!-- Rekap 3: Belanja Peningkatan Manajemen Mutu Terpadu (PMMT) -->
+            <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-200/80 card-shadow border-l-4 border-l-purple-600">
+                <div class="flex justify-between items-start">
+                    <div>
+                        <span class="inline-block px-2.5 py-1 text-xs font-semibold bg-purple-100 text-purple-800 rounded-md mb-2">
+                            Kelompok 3
+                        </span>
+                        <h4 class="font-bold text-slate-800 text-sm">Manajemen Mutu Terpadu (PMMT)</h4>
+                    </div>
+                    <div class="text-right">
+                        <span class="text-[11px] text-slate-500 block">Serapan</span>
+                        <span class="text-base font-bold text-purple-600" id="rekap3-persen">0%</span>
+                    </div>
+                </div>
+                <div class="mt-4 grid grid-cols-3 gap-1 text-[11px] pt-3 border-t border-slate-100">
+                    <div>
+                        <span class="text-slate-400 block">Pagu</span>
+                        <span class="font-semibold text-slate-700" id="rekap3-pagu">Rp 0</span>
+                    </div>
+                    <div>
+                        <span class="text-slate-400 block">Realisasi</span>
+                        <span class="font-semibold text-purple-600" id="rekap3-realisasi">Rp 0</span>
+                    </div>
+                    <div>
+                        <span class="text-slate-400 block">Sisa</span>
+                        <span class="font-semibold text-amber-600" id="rekap3-sisa">Rp 0</span>
+                    </div>
+                </div>
+            </div>
         </div>
 
         <!-- Section Graphic Chart -->
         <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-200/80 mb-6 no-print">
             <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 gap-2">
                 <div>
-                    <h3 class="font-bold text-slate-800">Grafik Tren Realisasi Belanja Bulanan</h3>
-                    <p class="text-xs text-slate-500">Perbandingan pengeluaran bulanan (Januari - Desember)</p>
+                    <h3 class="font-bold text-slate-800">Grafik Tren Realisasi Belanja Bulanan 2026</h3>
+                    <p class="text-xs text-slate-500">Perbandingan realisasi bulanan antar kelompok belanja</p>
                 </div>
             </div>
             <div class="h-64 sm:h-72 w-full">
@@ -233,7 +261,7 @@
             <!-- Table Action & Filters -->
             <div class="p-4 sm:p-5 border-b border-slate-200/80 flex flex-col md:flex-row justify-between items-stretch md:items-center gap-4 no-print">
                 <div class="flex items-center space-x-2">
-                    <h3 class="font-bold text-slate-800 text-base">Monitoring Progres Anggaran</h3>
+                    <h3 class="font-bold text-slate-800 text-base">Monitoring Progres Anggaran Kegiatan</h3>
                     <span class="bg-slate-100 text-slate-600 text-xs px-2.5 py-1 rounded-full font-medium" id="activity-count">0 Kegiatan</span>
                 </div>
                 
@@ -241,14 +269,15 @@
                     <!-- Search Field -->
                     <div class="relative">
                         <i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-xs"></i>
-                        <input type="text" id="search-input" oninput="renderTable()" placeholder="Cari kegiatan/kode..." class="w-full sm:w-60 pl-9 pr-3 py-1.5 text-xs bg-slate-50 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                        <input type="text" id="search-input" oninput="renderTable()" placeholder="Cari kegiatan/kode..." class="w-full sm:w-60 pl-9 pr-3 py-1.5 text-xs bg-slate-50 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500">
                     </div>
 
                     <!-- Group Filter -->
-                    <select id="filter-group" onchange="renderTable()" class="bg-slate-50 border border-slate-300 text-slate-700 text-xs rounded-lg px-3 py-1.5 focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                    <select id="filter-group" onchange="renderTable()" class="bg-slate-50 border border-slate-300 text-slate-700 text-xs rounded-lg px-3 py-1.5 focus:outline-none focus:ring-2 focus:ring-indigo-500">
                         <option value="ALL">Semua Kelompok Belanja</option>
-                        <option value="Belanja Bahan Pelayanan Kesehatan">Belanja Bahan Pelayanan Kesehatan</option>
-                        <option value="Belanja Barang Administrasi Umum">Belanja Barang Administrasi Umum</option>
+                        <option value="Belanja Workshop/ Simposium/ Seminar/ Rakornas">Workshop / Seminar / Rakornas</option>
+                        <option value="Belanja BIMTEK/ Kursus/Pelatihan/In House Training/Sosialisasi">BIMTEK / Kursus / Pelatihan</option>
+                        <option value="Belanja Peningkatan Manajemen Mutu Terpadu (PMMT)">Manajemen Mutu Terpadu (PMMT)</option>
                     </select>
                 </div>
             </div>
@@ -283,7 +312,7 @@
     <!-- Footer -->
     <footer class="bg-white border-t border-slate-200 mt-10 py-4 no-print">
         <div class="max-w-7xl mx-auto px-4 text-center text-xs text-slate-500">
-            &copy; 2026 Sistem Monitoring Realisasi Belanja Makan Minum Pasien.
+            &copy; 2026 Sistem Monitoring Realisasi Belanja Perjalanan Dinas.
         </div>
     </footer>
 
@@ -292,9 +321,9 @@
         <div class="bg-white rounded-2xl shadow-xl w-full max-w-3xl my-8 overflow-hidden transform transition-all">
             
             <!-- Modal Header -->
-            <div class="bg-emerald-800 text-white px-6 py-4 flex justify-between items-center">
-                <h3 class="font-bold text-lg" id="modal-title">Form Input Realisasi Anggaran</h3>
-                <button onclick="closeModal()" class="text-emerald-200 hover:text-white transition-colors">
+            <div class="bg-indigo-900 text-white px-6 py-4 flex justify-between items-center">
+                <h3 class="font-bold text-lg" id="modal-title">Form Input Realisasi Anggaran Perjalanan Dinas</h3>
+                <button onclick="closeModal()" class="text-indigo-200 hover:text-white transition-colors">
                     <i class="fa-solid fa-xmark text-xl"></i>
                 </button>
             </div>
@@ -306,82 +335,83 @@
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
                         <label class="block text-xs font-semibold text-slate-700 mb-1">Kode Sub-Kegiatan / Rekening *</label>
-                        <input type="text" id="form-kode" required placeholder="Contoh: 5.1.02.01.01.0026" class="w-full text-xs px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:outline-none">
+                        <input type="text" id="form-kode" required placeholder="Contoh: 5.1.02.04.01.0001" class="w-full text-xs px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:outline-none">
                     </div>
                     <div>
                         <label class="block text-xs font-semibold text-slate-700 mb-1">Kelompok Belanja *</label>
-                        <select id="form-kelompok" required class="w-full text-xs px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:outline-none">
-                            <option value="Belanja Bahan Pelayanan Kesehatan">Belanja Bahan Pelayanan Kesehatan</option>
-                            <option value="Belanja Barang Administrasi Umum">Belanja Barang Administrasi Umum</option>
+                        <select id="form-kelompok" required class="w-full text-xs px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:outline-none">
+                            <option value="Belanja Workshop/ Simposium/ Seminar/ Rakornas">Belanja Workshop/ Simposium/ Seminar/ Rakornas</option>
+                            <option value="Belanja BIMTEK/ Kursus/Pelatihan/In House Training/Sosialisasi">Belanja BIMTEK/ Kursus/Pelatihan/In House Training/Sosialisasi</option>
+                            <option value="Belanja Peningkatan Manajemen Mutu Terpadu (PMMT)">Belanja Peningkatan Manajemen Mutu Terpadu (PMMT)</option>
                         </select>
                     </div>
                 </div>
 
                 <div>
-                    <label class="block text-xs font-semibold text-slate-700 mb-1">Nama Kegiatan / Uraian Belanja *</label>
-                    <input type="text" id="form-nama" required placeholder="Contoh: Pengadaan Bahan Makanan Basah Pasien Rawat Inap" class="w-full text-xs px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:outline-none">
+                    <label class="block text-xs font-semibold text-slate-700 mb-1">Nama Kegiatan / Uraian Perjalanan Dinas *</label>
+                    <input type="text" id="form-nama" required placeholder="Contoh: Perjalanan Dinas Rakornas Evaluasi Kinerja Anggaran 2026" class="w-full text-xs px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:outline-none">
                 </div>
 
                 <div>
                     <label class="block text-xs font-semibold text-slate-700 mb-1">Pagu Anggaran (Rp) *</label>
-                    <input type="number" id="form-pagu" min="0" required placeholder="0" class="w-full text-xs px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:outline-none">
+                    <input type="number" id="form-pagu" min="0" required placeholder="0" class="w-full text-xs px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:outline-none">
                 </div>
 
                 <!-- Section Input Realisasi Bulanan Januari-Desember -->
                 <div class="border-t border-slate-200 pt-4 mt-2">
                     <div class="flex justify-between items-center mb-2">
-                        <label class="block text-xs font-bold text-slate-800">Rincian Realisasi Keuangan Bulanan (Rp)</label>
-                        <span class="text-[11px] text-emerald-600 font-semibold" id="form-total-preview">Total Realisasi: Rp 0</span>
+                        <label class="block text-xs font-bold text-slate-800">Rincian Realisasi Keuangan Bulanan 2026 (Rp)</label>
+                        <span class="text-[11px] text-indigo-600 font-semibold" id="form-total-preview">Total Realisasi: Rp 0</span>
                     </div>
 
                     <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3 bg-slate-50 p-4 rounded-xl border border-slate-200">
                         <div>
                             <label class="block text-[11px] text-slate-600 mb-1">Januari</label>
-                            <input type="number" id="m-0" min="0" value="0" oninput="updateFormPreview()" class="w-full text-xs px-2.5 py-1.5 border border-slate-300 rounded focus:ring-1 focus:ring-emerald-500">
+                            <input type="number" id="m-0" min="0" value="0" oninput="updateFormPreview()" class="w-full text-xs px-2.5 py-1.5 border border-slate-300 rounded focus:ring-1 focus:ring-indigo-500">
                         </div>
                         <div>
                             <label class="block text-[11px] text-slate-600 mb-1">Februari</label>
-                            <input type="number" id="m-1" min="0" value="0" oninput="updateFormPreview()" class="w-full text-xs px-2.5 py-1.5 border border-slate-300 rounded focus:ring-1 focus:ring-emerald-500">
+                            <input type="number" id="m-1" min="0" value="0" oninput="updateFormPreview()" class="w-full text-xs px-2.5 py-1.5 border border-slate-300 rounded focus:ring-1 focus:ring-indigo-500">
                         </div>
                         <div>
                             <label class="block text-[11px] text-slate-600 mb-1">Maret</label>
-                            <input type="number" id="m-2" min="0" value="0" oninput="updateFormPreview()" class="w-full text-xs px-2.5 py-1.5 border border-slate-300 rounded focus:ring-1 focus:ring-emerald-500">
+                            <input type="number" id="m-2" min="0" value="0" oninput="updateFormPreview()" class="w-full text-xs px-2.5 py-1.5 border border-slate-300 rounded focus:ring-1 focus:ring-indigo-500">
                         </div>
                         <div>
                             <label class="block text-[11px] text-slate-600 mb-1">April</label>
-                            <input type="number" id="m-3" min="0" value="0" oninput="updateFormPreview()" class="w-full text-xs px-2.5 py-1.5 border border-slate-300 rounded focus:ring-1 focus:ring-emerald-500">
+                            <input type="number" id="m-3" min="0" value="0" oninput="updateFormPreview()" class="w-full text-xs px-2.5 py-1.5 border border-slate-300 rounded focus:ring-1 focus:ring-indigo-500">
                         </div>
                         <div>
                             <label class="block text-[11px] text-slate-600 mb-1">Mei</label>
-                            <input type="number" id="m-4" min="0" value="0" oninput="updateFormPreview()" class="w-full text-xs px-2.5 py-1.5 border border-slate-300 rounded focus:ring-1 focus:ring-emerald-500">
+                            <input type="number" id="m-4" min="0" value="0" oninput="updateFormPreview()" class="w-full text-xs px-2.5 py-1.5 border border-slate-300 rounded focus:ring-1 focus:ring-indigo-500">
                         </div>
                         <div>
                             <label class="block text-[11px] text-slate-600 mb-1">Juni</label>
-                            <input type="number" id="m-5" min="0" value="0" oninput="updateFormPreview()" class="w-full text-xs px-2.5 py-1.5 border border-slate-300 rounded focus:ring-1 focus:ring-emerald-500">
+                            <input type="number" id="m-5" min="0" value="0" oninput="updateFormPreview()" class="w-full text-xs px-2.5 py-1.5 border border-slate-300 rounded focus:ring-1 focus:ring-indigo-500">
                         </div>
                         <div>
                             <label class="block text-[11px] text-slate-600 mb-1">Juli</label>
-                            <input type="number" id="m-6" min="0" value="0" oninput="updateFormPreview()" class="w-full text-xs px-2.5 py-1.5 border border-slate-300 rounded focus:ring-1 focus:ring-emerald-500">
+                            <input type="number" id="m-6" min="0" value="0" oninput="updateFormPreview()" class="w-full text-xs px-2.5 py-1.5 border border-slate-300 rounded focus:ring-1 focus:ring-indigo-500">
                         </div>
                         <div>
                             <label class="block text-[11px] text-slate-600 mb-1">Agustus</label>
-                            <input type="number" id="m-7" min="0" value="0" oninput="updateFormPreview()" class="w-full text-xs px-2.5 py-1.5 border border-slate-300 rounded focus:ring-1 focus:ring-emerald-500">
+                            <input type="number" id="m-7" min="0" value="0" oninput="updateFormPreview()" class="w-full text-xs px-2.5 py-1.5 border border-slate-300 rounded focus:ring-1 focus:ring-indigo-500">
                         </div>
                         <div>
                             <label class="block text-[11px] text-slate-600 mb-1">September</label>
-                            <input type="number" id="m-8" min="0" value="0" oninput="updateFormPreview()" class="w-full text-xs px-2.5 py-1.5 border border-slate-300 rounded focus:ring-1 focus:ring-emerald-500">
+                            <input type="number" id="m-8" min="0" value="0" oninput="updateFormPreview()" class="w-full text-xs px-2.5 py-1.5 border border-slate-300 rounded focus:ring-1 focus:ring-indigo-500">
                         </div>
                         <div>
                             <label class="block text-[11px] text-slate-600 mb-1">Oktober</label>
-                            <input type="number" id="m-9" min="0" value="0" oninput="updateFormPreview()" class="w-full text-xs px-2.5 py-1.5 border border-slate-300 rounded focus:ring-1 focus:ring-emerald-500">
+                            <input type="number" id="m-9" min="0" value="0" oninput="updateFormPreview()" class="w-full text-xs px-2.5 py-1.5 border border-slate-300 rounded focus:ring-1 focus:ring-indigo-500">
                         </div>
                         <div>
                             <label class="block text-[11px] text-slate-600 mb-1">November</label>
-                            <input type="number" id="m-10" min="0" value="0" oninput="updateFormPreview()" class="w-full text-xs px-2.5 py-1.5 border border-slate-300 rounded focus:ring-1 focus:ring-emerald-500">
+                            <input type="number" id="m-10" min="0" value="0" oninput="updateFormPreview()" class="w-full text-xs px-2.5 py-1.5 border border-slate-300 rounded focus:ring-1 focus:ring-indigo-500">
                         </div>
                         <div>
                             <label class="block text-[11px] text-slate-600 mb-1">Desember</label>
-                            <input type="number" id="m-11" min="0" value="0" oninput="updateFormPreview()" class="w-full text-xs px-2.5 py-1.5 border border-slate-300 rounded focus:ring-1 focus:ring-emerald-500">
+                            <input type="number" id="m-11" min="0" value="0" oninput="updateFormPreview()" class="w-full text-xs px-2.5 py-1.5 border border-slate-300 rounded focus:ring-1 focus:ring-indigo-500">
                         </div>
                     </div>
                 </div>
@@ -391,7 +421,7 @@
                     <button type="button" onclick="closeModal()" class="px-4 py-2 text-xs font-medium text-slate-600 bg-slate-100 hover:bg-slate-200 rounded-lg transition-colors">
                         Batal
                     </button>
-                    <button type="submit" class="px-4 py-2 text-xs font-medium text-white bg-emerald-600 hover:bg-emerald-500 rounded-lg transition-colors shadow-sm">
+                    <button type="submit" class="px-4 py-2 text-xs font-medium text-white bg-indigo-700 hover:bg-indigo-600 rounded-lg transition-colors shadow-sm">
                         <i class="fa-solid fa-floppy-disk mr-1.5"></i> Simpan Data
                     </button>
                 </div>
@@ -438,7 +468,7 @@
                 </div>
 
                 <div class="flex justify-between items-center">
-                    <button onclick="quickEditFromDetail()" class="px-4 py-2 text-xs font-semibold text-emerald-700 bg-emerald-50 hover:bg-emerald-100 rounded-lg">
+                    <button onclick="quickEditFromDetail()" class="px-4 py-2 text-xs font-semibold text-indigo-700 bg-indigo-50 hover:bg-indigo-100 rounded-lg">
                         <i class="fa-solid fa-pen-to-square mr-1"></i> Edit Lengkap Kegiatan Ini
                     </button>
                     <button onclick="closeDetailModal()" class="px-4 py-2 text-xs font-medium bg-slate-800 text-white rounded-lg">
@@ -451,55 +481,55 @@
 
     <!-- Application Script Logic -->
     <script>
-        // Sample Initial Data for Makan Minum Pasien
+        // Sample Initial Data for Perjalanan Dinas 2026
         const initialKegiatanData = [
             {
-                id: "keg-1",
-                kode: "5.1.02.01.01.0026",
-                nama: "Pengadaan Bahan Makanan Basah Pasien (Daging, Ikan, Sayur, Buah)",
-                kelompok: "Belanja Bahan Pelayanan Kesehatan",
-                pagu: 450000000,
-                monthly: [32000000, 31500000, 35000000, 34000000, 36500000, 33000000, 37000000, 35500000, 34500000, 36000000, 33500000, 38000000]
+                id: "din-1",
+                kode: "5.1.02.04.01.0001",
+                nama: "Perjalanan Dinas Workshop Nasional Pengelolaan Keuangan & Anggaran 2026",
+                kelompok: "Belanja Workshop/ Simposium/ Seminar/ Rakornas",
+                pagu: 180000000,
+                monthly: [12000000, 15000000, 18000000, 14000000, 20000000, 16000000, 17000000, 15500000, 14500000, 16000000, 13500000, 18000000]
             },
             {
-                id: "keg-2",
-                kode: "5.1.02.01.01.0027",
-                nama: "Pengadaan Bahan Makanan Kering Pasien (Beras, Minyak, Gula, Susu Formula Khusus)",
-                kelompok: "Belanja Bahan Pelayanan Kesehatan",
-                pagu: 300000000,
-                monthly: [22000000, 21000000, 24000000, 23000000, 25000000, 22500000, 24500000, 23500000, 22000000, 24000000, 21500000, 26000000]
+                id: "din-2",
+                kode: "5.1.02.04.01.0002",
+                nama: "Perjalanan Dinas Kehadiran Simposium & Seminar Kesehatan Terpadu",
+                kelompok: "Belanja Workshop/ Simposium/ Seminar/ Rakornas",
+                pagu: 120000000,
+                monthly: [8000000, 9500000, 11000000, 10000000, 12000000, 10500000, 11500000, 9000000, 8500000, 10000000, 9000000, 11000000]
             },
             {
-                id: "keg-3",
-                kode: "5.1.02.01.01.0028",
-                nama: "Pengadaan Gas Elpiji & Bahan Bakar Dapur Instalasi Gizi Pasien",
-                kelompok: "Belanja Bahan Pelayanan Kesehatan",
-                pagu: 60000000,
-                monthly: [4500000, 4200000, 4800000, 4600000, 5000000, 4700000, 4900000, 4600000, 4500000, 4800000, 4400000, 5000000]
+                id: "din-3",
+                kode: "5.1.02.04.01.0003",
+                nama: "BIMTEK & In House Training Peningkatan Kapasitas SDM Aparatur",
+                kelompok: "Belanja BIMTEK/ Kursus/Pelatihan/In House Training/Sosialisasi",
+                pagu: 250000000,
+                monthly: [18000000, 20000000, 22000000, 19000000, 24000000, 21000000, 23000000, 20500000, 19500000, 22000000, 18500000, 22500000]
             },
             {
-                id: "keg-4",
-                kode: "5.1.02.01.01.0001",
-                nama: "Belanja Alat Tulis Kantor (ATK) & Form Rekam Asuhan Gizi Pasien",
-                kelompok: "Belanja Barang Administrasi Umum",
-                pagu: 25000000,
-                monthly: [1500000, 1200000, 2000000, 1800000, 1500000, 2200000, 1700000, 1600000, 1900000, 1500000, 1400000, 2100000]
+                id: "din-4",
+                kode: "5.1.02.04.01.0004",
+                nama: "Sosialisasi & Kursus Singkat Pelayanan Publik Digital",
+                kelompok: "Belanja BIMTEK/ Kursus/Pelatihan/In House Training/Sosialisasi",
+                pagu: 90000000,
+                monthly: [6000000, 7000000, 8500000, 7500000, 9000000, 7800000, 8200000, 7000000, 6800000, 7500000, 6500000, 8200000]
             },
             {
-                id: "keg-5",
-                kode: "5.1.02.01.01.0004",
-                nama: "Belanja Cetak Etiket Diet Pasien & Banner Edukasi Nutrisi",
-                kelompok: "Belanja Barang Administrasi Umum",
-                pagu: 15000000,
-                monthly: [1000000, 800000, 1200000, 950000, 1100000, 1300000, 1000000, 900000, 1150000, 1000000, 900000, 1500000]
+                id: "din-5",
+                kode: "5.1.02.04.01.0005",
+                nama: "Pendampingan & Evaluasi Peningkatan Manajemen Mutu Terpadu (PMMT)",
+                kelompok: "Belanja Peningkatan Manajemen Mutu Terpadu (PMMT)",
+                pagu: 150000000,
+                monthly: [10000000, 11500000, 13000000, 12000000, 14000000, 12500000, 13500000, 11000000, 10500000, 12000000, 11000000, 14000000]
             },
             {
-                id: "keg-6",
-                kode: "5.1.02.01.01.0005",
-                nama: "Belanja Bahan Kebersihan, Sanitasi & Disinfektan Dapur Gizi Pasien",
-                kelompok: "Belanja Barang Administrasi Umum",
-                pagu: 40000000,
-                monthly: [3000000, 2800000, 3200000, 3100000, 3300000, 2900000, 3400000, 3000000, 3100000, 3200000, 2900000, 3500000]
+                id: "din-6",
+                kode: "5.1.02.04.01.0006",
+                nama: "Audit Internal & Workshop Pemantauan Mutu Layanan Terpadu",
+                kelompok: "Belanja Peningkatan Manajemen Mutu Terpadu (PMMT)",
+                pagu: 110000000,
+                monthly: [7500000, 8000000, 9500000, 8800000, 10000000, 9200000, 9800000, 8500000, 8200000, 9000000, 8000000, 10500000]
             }
         ];
 
@@ -520,7 +550,7 @@
 
         // Storage Operations
         function loadDataFromStorage() {
-            const storedData = localStorage.getItem('sim_makan_minum_pasien_db');
+            const storedData = localStorage.getItem('sim_perjalanan_dinas_2026_db');
             if (storedData) {
                 try {
                     kegiatanList = JSON.parse(storedData);
@@ -534,7 +564,7 @@
         }
 
         function saveDataToStorage() {
-            localStorage.setItem('sim_makan_minum_pasien_db', JSON.stringify(kegiatanList));
+            localStorage.setItem('sim_perjalanan_dinas_2026_db', JSON.stringify(kegiatanList));
         }
 
         function resetToDefaultData() {
@@ -567,8 +597,9 @@
             let totalPagu = 0;
             let totalRealisasi = 0;
 
-            let group1 = { pagu: 0, realisasi: 0 }; // Belanja Bahan Pelayanan Kesehatan
-            let group2 = { pagu: 0, realisasi: 0 }; // Belanja Barang Administrasi Umum
+            let group1 = { pagu: 0, realisasi: 0 }; // Workshop / Simposium / Seminar / Rakornas
+            let group2 = { pagu: 0, realisasi: 0 }; // BIMTEK / Pelatihan
+            let group3 = { pagu: 0, realisasi: 0 }; // PMMT
 
             kegiatanList.forEach(item => {
                 const realisasi = calculateCumulative(item.monthly);
@@ -577,19 +608,22 @@
                 totalPagu += pagu;
                 totalRealisasi += realisasi;
 
-                if (item.kelompok === "Belanja Bahan Pelayanan Kesehatan") {
+                if (item.kelompok === "Belanja Workshop/ Simposium/ Seminar/ Rakornas") {
                     group1.pagu += pagu;
                     group1.realisasi += realisasi;
-                } else if (item.kelompok === "Belanja Barang Administrasi Umum") {
+                } else if (item.kelompok === "Belanja BIMTEK/ Kursus/Pelatihan/In House Training/Sosialisasi") {
                     group2.pagu += pagu;
                     group2.realisasi += realisasi;
+                } else if (item.kelompok === "Belanja Peningkatan Manajemen Mutu Terpadu (PMMT)") {
+                    group3.pagu += pagu;
+                    group3.realisasi += realisasi;
                 }
             });
 
             const totalSisa = totalPagu - totalRealisasi;
             const serapanTotal = totalPagu > 0 ? ((totalRealisasi / totalPagu) * 100).toFixed(2) : 0;
 
-            // Overview
+            // Overview Cards
             document.getElementById('card-total-pagu').innerText = formatRupiah(totalPagu);
             document.getElementById('card-total-realisasi').innerText = formatRupiah(totalRealisasi);
             document.getElementById('card-total-sisa').innerText = formatRupiah(totalSisa);
@@ -610,6 +644,14 @@
             document.getElementById('rekap2-realisasi').innerText = formatRupiah(group2.realisasi);
             document.getElementById('rekap2-sisa').innerText = formatRupiah(g2Sisa);
             document.getElementById('rekap2-persen').innerText = `${g2Serapan}%`;
+
+            // Group 3
+            const g3Sisa = group3.pagu - group3.realisasi;
+            const g3Serapan = group3.pagu > 0 ? ((group3.realisasi / group3.pagu) * 100).toFixed(1) : 0;
+            document.getElementById('rekap3-pagu').innerText = formatRupiah(group3.pagu);
+            document.getElementById('rekap3-realisasi').innerText = formatRupiah(group3.realisasi);
+            document.getElementById('rekap3-sisa').innerText = formatRupiah(g3Sisa);
+            document.getElementById('rekap3-persen').innerText = `${g3Serapan}%`;
         }
 
         // Render Data Table
@@ -655,16 +697,19 @@
                 sumRealisasi += realisasi;
 
                 // Color code serapan
-                let badgeClass = "bg-slate-100 text-slate-700";
-                let barClass = "bg-slate-500";
+                let badgeClass = "bg-indigo-100 text-indigo-800";
+                if (item.kelompok.includes("BIMTEK")) {
+                    badgeClass = "bg-blue-100 text-blue-800";
+                } else if (item.kelompok.includes("PMMT")) {
+                    badgeClass = "bg-purple-100 text-purple-800";
+                }
+
+                let barClass = "bg-indigo-600";
                 if (serapan >= 80) {
-                    badgeClass = "bg-emerald-100 text-emerald-800";
                     barClass = "bg-emerald-500";
                 } else if (serapan >= 50) {
-                    badgeClass = "bg-blue-100 text-blue-800";
-                    barClass = "bg-blue-500";
+                    barClass = "bg-indigo-500";
                 } else if (serapan > 0) {
-                    badgeClass = "bg-amber-100 text-amber-800";
                     barClass = "bg-amber-500";
                 }
 
@@ -673,11 +718,11 @@
                 tr.innerHTML = `
                     <td class="p-3 text-center font-medium text-slate-500">${index + 1}</td>
                     <td class="p-3">
-                        <div class="font-bold text-slate-800 cursor-pointer hover:text-emerald-700" onclick="showDetailModal('${item.id}')">${item.nama}</div>
+                        <div class="font-bold text-slate-800 cursor-pointer hover:text-indigo-700" onclick="showDetailModal('${item.id}')">${item.nama}</div>
                         <div class="text-[11px] text-slate-400 font-mono mt-0.5">${item.kode}</div>
                     </td>
                     <td class="p-3">
-                        <span class="inline-block px-2 py-0.5 text-[10px] font-semibold rounded ${item.kelompok === 'Belanja Bahan Pelayanan Kesehatan' ? 'bg-emerald-100 text-emerald-800' : 'bg-blue-100 text-blue-800'}">
+                        <span class="inline-block px-2 py-0.5 text-[10px] font-semibold rounded ${badgeClass}">
                             ${item.kelompok}
                         </span>
                     </td>
@@ -697,7 +742,7 @@
                             <button onclick="showDetailModal('${item.id}')" class="p-1.5 text-slate-500 hover:text-sky-600 hover:bg-sky-50 rounded transition-colors" title="Lihat Rincian">
                                 <i class="fa-solid fa-eye"></i>
                             </button>
-                            <button onclick="editKegiatan('${item.id}')" class="p-1.5 text-slate-500 hover:text-emerald-600 hover:bg-emerald-50 rounded transition-colors" title="Edit Kegiatan">
+                            <button onclick="editKegiatan('${item.id}')" class="p-1.5 text-slate-500 hover:text-indigo-600 hover:bg-indigo-50 rounded transition-colors" title="Edit Kegiatan">
                                 <i class="fa-solid fa-pen"></i>
                             </button>
                             <button onclick="deleteKegiatan('${item.id}')" class="p-1.5 text-slate-500 hover:text-red-600 hover:bg-red-50 rounded transition-colors" title="Hapus Kegiatan">
@@ -719,7 +764,7 @@
                     <td class="p-3 text-right text-slate-800 font-bold">${formatRupiah(sumPagu)}</td>
                     <td class="p-3 text-right text-emerald-700 font-bold">${formatRupiah(sumRealisasi)}</td>
                     <td class="p-3 text-right text-amber-700 font-bold">${formatRupiah(totalSisa)}</td>
-                    <td class="p-3 text-center text-emerald-800 font-bold">${totalSerapan}%</td>
+                    <td class="p-3 text-center text-indigo-800 font-bold">${totalSerapan}%</td>
                     <td class="p-3 no-print"></td>
                 </tr>
             `;
@@ -734,15 +779,21 @@
                     labels: monthNames,
                     datasets: [
                         {
-                            label: 'Belanja Bahan Pelayanan Kesehatan',
+                            label: 'Workshop / Seminar / Rakornas',
                             data: Array(12).fill(0),
-                            backgroundColor: '#059669',
+                            backgroundColor: '#4f46e5',
                             borderRadius: 4
                         },
                         {
-                            label: 'Belanja Barang Administrasi Umum',
+                            label: 'BIMTEK / Pelatihan / Sosialisasi',
                             data: Array(12).fill(0),
                             backgroundColor: '#2563eb',
+                            borderRadius: 4
+                        },
+                        {
+                            label: 'Manajemen Mutu Terpadu (PMMT)',
+                            data: Array(12).fill(0),
+                            backgroundColor: '#9333ea',
                             borderRadius: 4
                         }
                     ]
@@ -786,20 +837,24 @@
 
             const group1Monthly = Array(12).fill(0);
             const group2Monthly = Array(12).fill(0);
+            const group3Monthly = Array(12).fill(0);
 
             kegiatanList.forEach(item => {
                 item.monthly.forEach((val, monthIdx) => {
                     const amount = Number(val || 0);
-                    if (item.kelompok === 'Belanja Bahan Pelayanan Kesehatan') {
+                    if (item.kelompok === 'Belanja Workshop/ Simposium/ Seminar/ Rakornas') {
                         group1Monthly[monthIdx] += amount;
-                    } else if (item.kelompok === 'Belanja Barang Administrasi Umum') {
+                    } else if (item.kelompok === 'Belanja BIMTEK/ Kursus/Pelatihan/In House Training/Sosialisasi') {
                         group2Monthly[monthIdx] += amount;
+                    } else if (item.kelompok === 'Belanja Peningkatan Manajemen Mutu Terpadu (PMMT)') {
+                        group3Monthly[monthIdx] += amount;
                     }
                 });
             });
 
             chartInstance.data.datasets[0].data = group1Monthly;
             chartInstance.data.datasets[1].data = group2Monthly;
+            chartInstance.data.datasets[2].data = group3Monthly;
             chartInstance.update();
         }
 
@@ -807,7 +862,7 @@
         function openModal() {
             document.getElementById('form-kegiatan').reset();
             document.getElementById('edit-id').value = '';
-            document.getElementById('modal-title').innerText = 'Tambah Kegiatan Baru';
+            document.getElementById('modal-title').innerText = 'Tambah Kegiatan Perjalanan Dinas';
             updateFormPreview();
             document.getElementById('modal-kegiatan').classList.remove('hidden');
         }
@@ -848,7 +903,7 @@
                 }
             } else {
                 // Insert New
-                const newId = 'keg-' + Date.now();
+                const newId = 'din-' + Date.now();
                 kegiatanList.push({ id: newId, kode, nama, kelompok, pagu, monthly });
                 showToast('Kegiatan baru berhasil ditambahkan!', 'success');
             }
@@ -872,7 +927,7 @@
                 document.getElementById(`m-${idx}`).value = val;
             });
 
-            document.getElementById('modal-title').innerText = 'Edit Data Kegiatan';
+            document.getElementById('modal-title').innerText = 'Edit Data Kegiatan Perjalanan Dinas';
             updateFormPreview();
             document.getElementById('modal-kegiatan').classList.remove('hidden');
         }
@@ -960,7 +1015,7 @@
             const encodedUri = encodeURI(csvContent);
             const link = document.createElement("a");
             link.setAttribute("href", encodedUri);
-            link.setAttribute("download", `Laporan_Realisasi_Makan_Minum_Pasien_${new Date().toISOString().slice(0,10)}.csv`);
+            link.setAttribute("download", `Laporan_Realisasi_Perjalanan_Dinas_2026_${new Date().toISOString().slice(0,10)}.csv`);
             document.body.appendChild(link);
             link.click();
             document.body.removeChild(link);
@@ -978,7 +1033,7 @@
             const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(kegiatanList, null, 2));
             const downloadAnchor = document.createElement('a');
             downloadAnchor.setAttribute("href", dataStr);
-            downloadAnchor.setAttribute("download", `BACKUP_SIM_MAKAN_MINUM_${new Date().toISOString().slice(0,10)}.json`);
+            downloadAnchor.setAttribute("download", `BACKUP_SIM_PERJALANAN_DINAS_2026_${new Date().toISOString().slice(0,10)}.json`);
             document.body.appendChild(downloadAnchor);
             downloadAnchor.click();
             downloadAnchor.remove();
@@ -1023,7 +1078,7 @@
                 toastIcon.className = "inline-flex items-center justify-center flex-shrink-0 w-8 h-8 rounded-lg bg-red-100 text-red-600";
                 toastIcon.innerHTML = '<i class="fa-solid fa-xmark"></i>';
             } else {
-                toastIcon.className = "inline-flex items-center justify-center flex-shrink-0 w-8 h-8 rounded-lg bg-blue-100 text-blue-600";
+                toastIcon.className = "inline-flex items-center justify-center flex-shrink-0 w-8 h-8 rounded-lg bg-indigo-100 text-indigo-600";
                 toastIcon.innerHTML = '<i class="fa-solid fa-info"></i>';
             }
 
